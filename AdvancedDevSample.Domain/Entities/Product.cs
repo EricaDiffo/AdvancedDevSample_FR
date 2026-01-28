@@ -29,7 +29,24 @@ namespace AdvancedDevSample.Domain.Entities
             if (newPrice <= 0)
                 throw new DomainException("Le prix doit être positif");
 
+            if (!IsActive)
+                throw new DomainException("Produit inactif");
             Price = newPrice;
         }
+
+        public void ApplyDiscount(decimal discount)
+        {
+            ChangePrice(Price - discount);
+        }
+
+        public void Activate()
+        {
+            IsActive = true;
+        }
+        public void Deactivate()
+        {
+            IsActive = false;
+        } 
     }
 }
+        

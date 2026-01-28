@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AdvancedDevSample.Application\AdvancedDevSample.Application.csproj" />
     <ProjectReference Include="..\AdvancedDevSample.Domain\AdvancedDevSample.Domain.csproj" />
+    <ProjectReference Include="..\AdvancedDevSample.Infrastructure\AdvancedDevSample.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
