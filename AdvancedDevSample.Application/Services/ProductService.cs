@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdvancedDevSample.Application.Exceptios;
 
 namespace AdvancedDevSample.Application.Services
 {
@@ -25,9 +26,8 @@ namespace AdvancedDevSample.Application.Services
         }
         public Product GetProduct(Guid productId)
         {
-            var product = _repository.GetById(productId)
-                ?? throw new Exception("Product not found");
-            return product;
+            return _repository.GetById(productId)
+                ?? throw new ApplicationServiceException("Product not found", System.Net.HttpStatusCode.NotFound);
         }
 
     }
