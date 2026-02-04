@@ -1,4 +1,5 @@
 ﻿using AdvancedDevSample.Domain.Exceptions;
+using AdvancedDevSample.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,43 +11,48 @@ namespace AdvancedDevSample.Domain.Entities
     //Représente un produit vendable
     public class Product
     {
-        public Guid id { get; private set; }
-        public decimal Price { get; private set;  }
-        public bool IsActive { get; private set; }
+        private Guid guid;
 
+        /// <summary>
+        /// Représente un produit vendable.
+        /// </summary>
+        public Guid Id { get; private set; } // Identité
+        public decimal Price { get; private set; } // Invariant encapsulé dans Price
+        public bool IsActive { get; private set; } // true par défaut
+
+        //public Product(decimal price) : this(Guid.NewGuid(), d) { }
+        
+        public Product(Guid id, decimal price, bool IsActive)
+        {
+            Id = id == Guid.Empty ? Guid.NewGuid() : id;
+            Price = price; // Price valide par construction
+            IsActive = true;
+        }
+
+        // Constructeur requis par certains ORMs ; protégé pour empêcher l'utilisation publique.
         public Product()
         {
             IsActive = true;
         }
 
-        public Product(Guid id, decimal prix, bool isActive)
-        {
-            //modifie le prix
-            /// <param name="newPrice">Nouveau prix du produit</param>
-        }
-        public void ChangePrice(decimal newPrice)//Comportement
-        {
-            if (newPrice <= 0)
-                throw new DomainException("Le prix doit être positif");
+        
 
+        public void ChangePrice(decimal newPrice)
+        {
+            // Règle métier : le produit ne doit pas être inactif
             if (!IsActive)
-                throw new DomainException("Produit inactif");
+            {
+                throw new DomainException("Le produit est inactif.");
+            }
+
+            // Invariant déjà garanti par Price
             Price = newPrice;
         }
 
-        public void ApplyDiscount(decimal discount)
-        {
-            ChangePrice(Price - discount);
-        }
+        public void Deactivate() => IsActive = false;
+        public void Activate() => IsActive = true;
 
-        public void Activate()
-        {
-            IsActive = true;
-        }
-        public void Deactivate()
-        {
-            IsActive = false;
-        } 
+       
     }
 }
         

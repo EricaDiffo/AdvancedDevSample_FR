@@ -13,4 +13,5 @@ namespace AdvancedDevSample.Domain.Interfaces
 
         public Product GetById(Guid productId);
     }
+
 }

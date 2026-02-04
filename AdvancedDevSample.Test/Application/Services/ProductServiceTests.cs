@@ -24,7 +24,7 @@ namespace AdvancedDevSample.Test.Application.Services
 
             //Act
             var request = new ChangePriceRequest { NewPrice = 20 };
-            service.ChangeProductPrice(product.id, request.NewPrice);
+            service.ChangeProductPrice(product.Id, request);
 
             //Assert
             Assert.Equal(20, product.Price);
