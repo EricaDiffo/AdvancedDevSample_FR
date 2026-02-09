@@ -22,7 +22,7 @@ namespace AdvancedDevSample.Test.API.Integration
         public async Task ChangePrice_Should_Return_NoContent_And_Save_Product()
         {
             //Arrange
-            var product = new Product(Guid.NewGuid(), 10, true); // état initial valide
+            var product = new Product(Guid.NewGuid(), new Price(10), true); // état initial valide
             _repository.Seed(product);
 
             var request = new ChangePriceRequest { NewPrice = 20 };
@@ -35,7 +35,7 @@ namespace AdvancedDevSample.Test.API.Integration
 
             //Assert - Persistence réelle
             var updated = await _repository.GetByIdAsync(product.Id);
-            Assert.Equal(20, updated! .Price);
+            Assert.Equal(20, updated!.Price.Value);
         }
     }
 }

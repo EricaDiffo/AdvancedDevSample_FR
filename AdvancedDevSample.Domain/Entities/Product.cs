@@ -19,7 +19,7 @@ namespace AdvancedDevSample.Domain.Entities
         /// <summary>
         /// Prix actuel du produit. Doit toujours être strictement positif.
         /// </summary>
-        public decimal Price { get; private set; }
+        public Price Price { get; private set; }
 
         /// <summary>
         /// Indique si le produit est actif (vendable).
@@ -32,13 +32,8 @@ namespace AdvancedDevSample.Domain.Entities
         /// <param name="id">Identifiant unique du produit.</param>
         /// <param name="price">Prix initial (doit être strictement positif).</param>
         /// <param name="isActive">État initial du produit (actif par défaut).</param>
-        public Product(Guid id, decimal price, bool isActive = true)
+        public Product(Guid id, Price price, bool isActive = true)
         {
-            if (price <= 0)
-            {
-                throw new DomainException("Le prix doit être strictement positif.");
-            }
-
             Id = id == Guid.Empty ? Guid.NewGuid() : id;
             Price = price;
             IsActive = isActive;
@@ -68,12 +63,7 @@ namespace AdvancedDevSample.Domain.Entities
                 throw new DomainException("Le produit est inactif.");
             }
 
-            if (newPrice <= 0)
-            {
-                throw new DomainException("Le prix doit être strictement positif.");
-            }
-
-            Price = newPrice;
+            Price = new Price(newPrice);
         }
 
         /// <summary>
@@ -82,7 +72,7 @@ namespace AdvancedDevSample.Domain.Entities
         /// <param name="discount">Montant de la réduction.</param>
         public void ApplyDiscount(decimal discount)
         {
-            ChangePrice(Price - discount);
+            ChangePrice(Price.Value - discount);
         }
 
         public void Deactivate() => IsActive = false;
