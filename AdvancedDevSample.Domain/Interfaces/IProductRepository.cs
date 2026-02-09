@@ -12,6 +12,8 @@ namespace AdvancedDevSample.Domain.Interfaces
         public void Save(Product product);
 
         public Product GetById(Guid productId);
+
+        public IEnumerable<Product> ListAll();
     }
 
 }

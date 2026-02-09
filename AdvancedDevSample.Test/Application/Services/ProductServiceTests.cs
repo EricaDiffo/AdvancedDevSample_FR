@@ -1,6 +1,7 @@
 ﻿using AdvancedDevSample.Application.DTOs;
 using AdvancedDevSample.Application.Services;
 using AdvancedDevSample.Domain.Entities;
+using AdvancedDevSample.Domain.ValueObjects;
 using AdvancedDevSample.Test.Application.Fakes;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,7 @@ namespace AdvancedDevSample.Test.Application.Services
         public void ChangeProductPrice_Should_Save_Product_When_Price_Is_Valid()
         {
             //Arrange
-            var product = new Product();
-            product.ChangePrice(10); //état initial valide
+            var product = new Product(Guid.NewGuid(), new Price(10), true); // état initial valide
 
             var repo = new FakeProductRepository(product);
             var service = new ProductService(repo);
@@ -27,7 +27,7 @@ namespace AdvancedDevSample.Test.Application.Services
             service.ChangeProductPrice(product.Id, request);
 
             //Assert
-            Assert.Equal(20, product.Price);
+            Assert.Equal(20, product.Price.Value);
             Assert.True(repo.WasSaved);
         }
     }

@@ -11,32 +11,31 @@ namespace AdvancedDevSample.Infrastructure.Repositories
 {
     public class EfProductRepository : IProductRepository
     {
-        public void Add(Product product)
-        {
-            throw new NotImplementedException();
-        }
-
         public Product GetById(Guid id)
         {
             ProductEntity product = new() { Id = id, Price = 10, IsActive = false };
-            var domainProduct = new Product(product.Id, product.Price, product.IsActive);
+            var domainProduct = new Product(product.Id, new Price(product.Price), product.IsActive);
             return domainProduct;
         }
 
         public IEnumerable<Product> ListAll()
         {
-            throw new NotImplementedException();
-        }
+            // Simulation : retourner une petite liste de produits en mémoire
+            var products = new List<ProductEntity>
+            {
+                new() { Id = Guid.NewGuid(), Price = 10, IsActive = true },
+                new() { Id = Guid.NewGuid(), Price = 20, IsActive = false }
+            };
 
-        public void Remove(Guid id)
-        {
-            throw new NotImplementedException();
+            return products
+                .Select(p => new Product(p.Id, new Price(p.Price), p.IsActive))
+                .ToList();
         }
 
         public void Save(Product product)
         {
             // Simuler la sauvegarde en base de données
-            Console.WriteLine($"Produit avec ID {product.Id} sauvegardé avec le prix {product.Price}.");
+            Console.WriteLine($"Produit avec ID {product.Id} sauvegardé avec le prix {product.Price.Value}.");
         }
     }
 }
