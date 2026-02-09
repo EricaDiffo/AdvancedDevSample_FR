@@ -16,15 +16,14 @@ namespace AdvancedDevSample.Test.Application.Services
         public void ChangeProductPrice_Should_Save_Product_When_Price_Is_Valid()
         {
             //Arrange
-            var product = new Product();
-            product.ChangePrice(10); //état initial valide
+            var product = new Product(Guid.NewGuid(), 10, true); // état initial valide
 
             var repo = new FakeProductRepository(product);
             var service = new ProductService(repo);
 
             //Act
             var request = new ChangePriceRequest { NewPrice = 20 };
-            service.ChangeProductPrice(product.Id, request);
+            service.ChangeProductPrice(product.Id, request.NewPrice);
 
             //Assert
             Assert.Equal(20, product.Price);
