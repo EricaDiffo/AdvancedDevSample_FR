@@ -15,16 +15,20 @@ builder.Services.AddDbContext<CatalogDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// recuperer les fichiers xml de la solution pour les inclure dans le swagger 
 builder.Services.AddSwaggerGen(options =>
 {
-    var basePath = AppContext.BaseDirectory;
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Product Catalog API",
+        Version = "v1",
+        Description = "API de catalogue produits permettant de lister, consulter, modifier le prix, appliquer des promotions et activer/désactiver des produits."
+    });
 
+    // Inclure les commentaires XML (doc ///) de tous les projets pour enrichir Swagger
+    var basePath = AppContext.BaseDirectory;
     foreach (var xmlFile in Directory.GetFiles(basePath, "*.xml"))
     {
-        options.IncludeXmlComments(xmlFile);
+        options.IncludeXmlComments(xmlFile, includeControllerXmlComments: true);
     }
 });
 
