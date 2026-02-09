@@ -1,13 +1,16 @@
-﻿using AdvancedDevSample.Application.DTOs;
+using AdvancedDevSample.Application.DTOs;
 using AdvancedDevSample.Application.Exceptions;
 using AdvancedDevSample.Application.Services;
 using AdvancedDevSample.Domain.Exceptions;
+using AdvancedDevSample.Api.Samples;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AdvancedDevSample.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductsController : ControllerBase
     {
@@ -170,23 +173,7 @@ namespace AdvancedDevSample.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProductResponse>), StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<ProductResponse>> GetSamples()
         {
-            var samples = new List<ProductResponse>
-            {
-                new()
-                {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Price = 9.99m,
-                    IsActive = true
-                },
-                new()
-                {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    Price = 19.99m,
-                    IsActive = false
-                }
-            };
-
-            return Ok(samples);
+            return Ok(ProductSamples.All);
         }
     }
 

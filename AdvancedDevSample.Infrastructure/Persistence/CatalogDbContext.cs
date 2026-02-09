@@ -11,6 +11,13 @@ namespace AdvancedDevSample.Infrastructure.Persistence
 
         public DbSet<ProductEntity> Products => Set<ProductEntity>();
 
+        // Pour Customer, on mappe directement l'entité de domaine comme table.
+        public DbSet<Customer> Customers => Set<Customer>();
+
+        // Pour Order / OrderItem, on mappe également directement les entités de domaine.
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
         public override int SaveChanges()
         {
             return base.SaveChanges();
