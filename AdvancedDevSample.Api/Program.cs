@@ -1,11 +1,16 @@
 using AdvancedDevSample.Api.Middlewares;
 using AdvancedDevSample.Application.Services;
 using AdvancedDevSample.Domain.Interfaces;
+using AdvancedDevSample.Infrastructure.Persistence;
 using AdvancedDevSample.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<CatalogDbContext>(options =>
+    options.UseInMemoryDatabase("CatalogDb"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
