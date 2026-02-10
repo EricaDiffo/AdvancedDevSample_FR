@@ -65,15 +65,37 @@ namespace AdvancedDevSample.Api.Controllers
         }
 
         /// <summary>
+        /// Récupère les lignes (produits) d'une commande donnée.
+        /// </summary>
+        /// <param name="id">Identifiant unique de la commande.</param>
+        /// <response code="200">Liste des produits de la commande.</response>
+        /// <response code="404">Commande introuvable.</response>
+        [HttpGet("{id}/items")]
+        [ProducesResponseType(typeof(IEnumerable<OrderItemResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<OrderItemResponse>> GetItems(Guid id)
+        {
+            try
+            {
+                var order = _orderService.GetById(id);
+                return Ok(order.Items);
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Annuaire de jeux de données exemple pour les commandes.
         /// </summary>
         /// <response code="200">Exemples de commandes retournées.</response>
-        [HttpGet("samples")]
-        [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<OrderResponse>> GetSamples()
-        {
-            return Ok(Api.Samples.OrderSamples.All);
-        }
+        //[HttpGet("samples")]
+       /// [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
+        ///public ActionResult<IEnumerable<OrderResponse>> GetSamples()
+        ///{
+           /// return Ok(Api.Samples.OrderSamples.All);
+        ///}
     }
 }
 

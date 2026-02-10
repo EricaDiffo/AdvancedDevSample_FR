@@ -113,12 +113,12 @@ namespace AdvancedDevSample.Api.Controllers
         /// Annuaire de jeux de données exemple pour les clients.
         /// </summary>
         /// <response code="200">Exemples de clients retournés.</response>
-        [HttpGet("samples")]
-        [ProducesResponseType(typeof(IEnumerable<CustomerResponse>), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<CustomerResponse>> GetSamples()
-        {
-            return Ok(Api.Samples.CustomerSamples.All);
-        }
+        ///[HttpGet("samples")]
+        ///[ProducesResponseType(typeof(IEnumerable<CustomerResponse>), StatusCodes.Status200OK)]
+        ///public ActionResult<IEnumerable<CustomerResponse>> GetSamples()
+       /// {
+          ///  return Ok(Api.Samples.CustomerSamples.All);
+        ///}
     }
 }
 
