@@ -1,33 +1,33 @@
-﻿using AdvancedDevSample.Domain.Entities;
+using AdvancedDevSample.Domain.Entities;
 using AdvancedDevSample.Domain.Interfaces;
 
 namespace AdvancedDevSample.Test.API.Integration
 {
+    /// <summary>
+    /// Implémentation en mémoire de <see cref="IProductRepository"/> pour les tests d'intégration.
+    /// </summary>
     public class InMemoryProductRepositoryAsync : IProductRepository
     {
         private readonly Dictionary<Guid, Product> _store = new();
 
-       // public Task<Product?> GetById(Guid id)
-         //   => Task.FromResult(_store.TryGetValue(id, out var product) ? product : null);
-
-        //public Task save(Product product)
-        //{
-          //  _store[product.Id] = product;
-            //return Task.CompletedTask;
-        //}
-
-        //Helper pour initialiser le test
-        public void Seed(Product product)
-            => _store[product.Id] = product;
+        /// <summary>
+        /// Helper pour initialiser les données d'un test.
+        /// </summary>
+        public void Seed(Product product) => _store[product.Id] = product;
 
         public void Save(Product product)
         {
-            throw new NotImplementedException();
+            _store[product.Id] = product;
         }
 
         public Product GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return _store.TryGetValue(id, out var product) ? product : null!;
+        }
+
+        public IEnumerable<Product> ListAll()
+        {
+            return _store.Values.ToList();
         }
     }
 }

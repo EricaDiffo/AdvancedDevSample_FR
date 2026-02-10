@@ -1,6 +1,8 @@
 using AdvancedDevSample.Domain.Entities;
 using AdvancedDevSample.Domain.Interfaces;
 using AdvancedDevSample.Domain.ValueObjects;
+using AdvancedDevSample.Infrastructure.Exceptions;
+using AdvancedDevSample.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,31 +13,75 @@ namespace AdvancedDevSample.Infrastructure.Repositories
 {
     public class EfProductRepository : IProductRepository
     {
+        private readonly CatalogDbContext _context;
+
+        public EfProductRepository(CatalogDbContext context)
+        {
+            _context = context;
+        }
+
         public Product GetById(Guid id)
         {
-            ProductEntity product = new() { Id = id, Price = 10, IsActive = false };
-            var domainProduct = new Product(product.Id, new Price(product.Price), product.IsActive);
-            return domainProduct;
+            try
+            {
+                var entity = _context.Products.Find(id);
+
+                if (entity is null)
+                {
+                    return null!;
+                }
+
+                return new Product(entity.Id, new Price(entity.Price), entity.IsActive);
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la récupération du produit.", ex);
+            }
         }
 
         public IEnumerable<Product> ListAll()
         {
-            // Simulation : retourner une petite liste de produits en mémoire
-            var products = new List<ProductEntity>
+            try
             {
-                new() { Id = Guid.NewGuid(), Price = 10, IsActive = true },
-                new() { Id = Guid.NewGuid(), Price = 20, IsActive = false }
-            };
-
-            return products
-                .Select(p => new Product(p.Id, new Price(p.Price), p.IsActive))
-                .ToList();
+                return _context.Products
+                    .Select(p => new Product(p.Id, new Price(p.Price), p.IsActive))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la récupération de la liste des produits.", ex);
+            }
         }
 
         public void Save(Product product)
         {
-            // Simuler la sauvegarde en base de données
-            Console.WriteLine($"Produit avec ID {product.Id} sauvegardé avec le prix {product.Price.Value}.");
+            try
+            {
+                var entity = _context.Products.Find(product.Id);
+
+                if (entity is null)
+                {
+                    entity = new ProductEntity
+                    {
+                        Id = product.Id,
+                        Price = product.Price.Value,
+                        IsActive = product.IsActive
+                    };
+
+                    _context.Products.Add(entity);
+                }
+                else
+                {
+                    entity.Price = product.Price.Value;
+                    entity.IsActive = product.IsActive;
+                }
+
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la sauvegarde du produit.", ex);
+            }
         }
     }
 }
