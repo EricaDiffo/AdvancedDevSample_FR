@@ -1,10 +1,7 @@
-﻿using AdvancedDevSample.Domain.Interfaces;
+using AdvancedDevSample.Domain.Interfaces;
 using AdvancedDevSample.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdvancedDevSample.Test.Application.Fakes
 {
@@ -22,6 +19,12 @@ namespace AdvancedDevSample.Test.Application.Fakes
         public void Save(Product product)
         {
             WasSaved = true;
+        }
+
+        public IEnumerable<Product> ListAll()
+        {
+            // Pour les besoins des tests unitaires actuels, on retourne simplement le produit unique.
+            yield return _product;
         }
     }
 }

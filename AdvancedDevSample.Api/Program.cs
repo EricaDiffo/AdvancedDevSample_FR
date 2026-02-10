@@ -42,11 +42,12 @@ builder.Services.AddSwaggerGen(options =>
     // Schéma de sécurité Bearer token
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Token d'accès au format Bearer {token}",
+        Description = "Token d'accès au format Bearer {token}. Entrez 'Bearer' suivi d'un espace puis votre token.",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
