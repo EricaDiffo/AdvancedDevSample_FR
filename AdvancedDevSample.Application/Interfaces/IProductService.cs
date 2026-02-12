@@ -7,6 +7,8 @@ namespace AdvancedDevSample.Application.Interfaces
     /// </summary>
     public interface IProductService
     {
+        ProductResponse Create(CreateProductRequest request);
+
         ProductResponse GetById(Guid id);
 
         IEnumerable<ProductResponse> ListAll();
@@ -18,6 +20,8 @@ namespace AdvancedDevSample.Application.Interfaces
         void ActivateProduct(Guid productId);
 
         void DeactivateProduct(Guid productId);
+
+        void Delete(Guid id);
     }
 }
 

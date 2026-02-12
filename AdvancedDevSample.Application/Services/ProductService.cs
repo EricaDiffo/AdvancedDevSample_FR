@@ -3,6 +3,7 @@ using AdvancedDevSample.Application.Exceptions;
 using AdvancedDevSample.Application.Interfaces;
 using AdvancedDevSample.Domain.Entities;
 using AdvancedDevSample.Domain.Interfaces;
+using AdvancedDevSample.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,13 @@ namespace AdvancedDevSample.Application.Services
         public ProductService(IProductRepository repository)
         {
             _repository = repository;
+        }
+
+        public ProductResponse Create(CreateProductRequest request)
+        {
+            var product = new Product(Guid.Empty, new Price(request.Price), true);
+            _repository.Save(product);
+            return MapToResponse(product);
         }
 
         public ProductResponse GetById(Guid id)
@@ -60,6 +68,12 @@ namespace AdvancedDevSample.Application.Services
             var product = GetProductEntity(productId);
             product.Deactivate();
             _repository.Save(product);
+        }
+
+        public void Delete(Guid id)
+        {
+            var product = GetProductEntity(id);
+            _repository.Delete(id);
         }
 
         private Product GetProductEntity(Guid productId)

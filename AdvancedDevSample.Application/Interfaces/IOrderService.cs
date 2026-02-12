@@ -12,6 +12,10 @@ namespace AdvancedDevSample.Application.Interfaces
         OrderResponse GetById(Guid id);
 
         IEnumerable<OrderResponse> ListAll();
+
+        OrderResponse Update(Guid id, UpdateOrderRequest request);
+
+        void Delete(Guid id);
     }
 }
 

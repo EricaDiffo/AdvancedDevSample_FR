@@ -48,6 +48,20 @@ namespace AdvancedDevSample.Application.Services
                 .ToList();
         }
 
+        public OrderResponse Update(Guid id, UpdateOrderRequest request)
+        {
+            var order = GetOrderEntity(id);
+            order.ChangeStatus(request.Status);
+            _repository.Save(order);
+            return MapToResponse(order);
+        }
+
+        public void Delete(Guid id)
+        {
+            var order = GetOrderEntity(id);
+            _repository.Delete(id);
+        }
+
         private Order GetOrderEntity(Guid id)
         {
             return _repository.GetById(id)
