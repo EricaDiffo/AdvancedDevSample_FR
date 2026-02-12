@@ -22,6 +22,27 @@ namespace AdvancedDevSample.Api.Controllers
         }
 
         /// <summary>
+        /// Crée un nouveau produit.
+        /// </summary>
+        /// <response code="201">Produit créé.</response>
+        /// <response code="400">Règle métier violée (prix invalide, etc.).</response>
+        [HttpPost]
+        [ProducesResponseType(typeof(ProductResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<ProductResponse> Create([FromBody] CreateProductRequest request)
+        {
+            try
+            {
+                var product = _productService.Create(request);
+                return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Récupère la liste de tous les produits.
         /// </summary>
         /// <remarks>
@@ -153,6 +174,28 @@ namespace AdvancedDevSample.Api.Controllers
             try
             {
                 _productService.DeactivateProduct(id);
+                return NoContent();
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Supprime un produit.
+        /// </summary>
+        /// <param name="id">Identifiant du produit.</param>
+        /// <response code="204">Produit supprimé.</response>
+        /// <response code="404">Produit introuvable.</response>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                _productService.Delete(id);
                 return NoContent();
             }
             catch (ApplicationServiceException ex)

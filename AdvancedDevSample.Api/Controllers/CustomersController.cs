@@ -90,46 +90,30 @@ namespace AdvancedDevSample.Api.Controllers
         }
 
         /// <summary>
-        /// Active un client.
+        /// Supprime un client.
         /// </summary>
         /// <param name="id">Identifiant du client.</param>
-        /// <response code="204">Client activé.</response>
+        /// <response code="204">Client supprimé.</response>
+        /// <response code="400">Le client ne peut pas être supprimé (a des commandes existantes).</response>
         /// <response code="404">Client introuvable.</response>
-        [HttpPut("{id}/activate")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Activate(Guid id)
+        public IActionResult Delete(Guid id)
         {
             try
             {
-                _customerService.ActivateCustomer(id);
+                _customerService.Delete(id);
                 return NoContent();
             }
-            catch (ApplicationServiceException ex)
+            catch (ApplicationServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return NotFound(ex.Message);
             }
-        }
-
-        /// <summary>
-        /// Désactive un client.
-        /// </summary>
-        /// <param name="id">Identifiant du client.</param>
-        /// <response code="204">Client désactivé.</response>
-        /// <response code="404">Client introuvable.</response>
-        [HttpPut("{id}/deactivate")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Deactivate(Guid id)
-        {
-            try
+            catch (ApplicationServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                _customerService.DeactivateCustomer(id);
-                return NoContent();
-            }
-            catch (ApplicationServiceException ex)
-            {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

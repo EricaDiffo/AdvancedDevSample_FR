@@ -9,6 +9,8 @@ namespace AdvancedDevSample.Domain.Interfaces
         Order? GetById(Guid id);
 
         IEnumerable<Order> ListAll();
+
+        void Delete(Guid id);
     }
 }
 

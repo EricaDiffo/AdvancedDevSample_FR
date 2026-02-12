@@ -95,6 +95,26 @@ namespace AdvancedDevSample.Infrastructure.Repositories
                 throw new InfrastructureException("Erreur lors de la sauvegarde de la commande.", ex);
             }
         }
+
+        public void Delete(Guid id)
+        {
+            try
+            {
+                var entity = _context.Orders
+                    .Include(o => o.Items)
+                    .FirstOrDefault(o => o.Id == id);
+
+                if (entity != null)
+                {
+                    _context.Orders.Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la suppression de la commande.", ex);
+            }
+        }
     }
 }
 

@@ -14,6 +14,8 @@ namespace AdvancedDevSample.Domain.Interfaces
         public Product GetById(Guid productId);
 
         public IEnumerable<Product> ListAll();
+
+        public void Delete(Guid id);
     }
 
 }

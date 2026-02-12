@@ -26,5 +26,10 @@ namespace AdvancedDevSample.Test.Application.Fakes
             // Pour les besoins des tests unitaires actuels, on retourne simplement le produit unique.
             yield return _product;
         }
+
+        public void Delete(Guid id)
+        {
+            // Stub pour les tests unitaires
+        }
     }
 }
