@@ -91,11 +91,11 @@ namespace AdvancedDevSample.Api.Controllers
         /// </summary>
         /// <response code="200">Exemples de commandes retournées.</response>
         //[HttpGet("samples")]
-       /// [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
-        ///public ActionResult<IEnumerable<OrderResponse>> GetSamples()
-        ///{
-           /// return Ok(Api.Samples.OrderSamples.All);
-        ///}
+        //[ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
+        //public ActionResult<IEnumerable<OrderResponse>> GetSamples()
+        //{
+        //    return Ok(Api.Samples.OrderSamples.All);
+        //}
     }
 }
 

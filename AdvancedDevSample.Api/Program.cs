@@ -21,7 +21,7 @@ builder.Services.AddDbContext<CatalogDbContext>(options =>
     options.UseInMemoryDatabase("CatalogDb"));
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -96,7 +96,7 @@ builder.Services
 
 // ===== Dépendances Application =====
 builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 // ===== Dépendances Infrastructure =====
@@ -109,7 +109,7 @@ var app = builder.Build();
 // Seed des repositories avec les données de l'annuaire pour permettre les opérations réelles
 using (var scope = app.Services.CreateScope())
 {
-    // Produits
+    // Produits à partir de l'annuaire Swagger
     var productRepo = scope.ServiceProvider.GetRequiredService<IProductRepository>();
     foreach (var sample in ProductSamples.All)
     {
@@ -117,7 +117,14 @@ using (var scope = app.Services.CreateScope())
         productRepo.Save(product);
     }
 
-    // Clients
+    // Produits générés automatiquement
+    var generatedProducts = SampleDataFactory.CreateProducts(50).ToList();
+    foreach (var product in generatedProducts)
+    {
+        productRepo.Save(product);
+    }
+
+    // Clients à partir de l'annuaire Swagger
     var customerRepo = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
     foreach (var sample in CustomerSamples.All)
     {
@@ -125,7 +132,14 @@ using (var scope = app.Services.CreateScope())
         customerRepo.Save(customer);
     }
 
-    // Commandes
+    // Clients générés automatiquement
+    var generatedCustomers = SampleDataFactory.CreateCustomers(50).ToList();
+    foreach (var customer in generatedCustomers)
+    {
+        customerRepo.Save(customer);
+    }
+
+    // Commandes à partir de l'annuaire Swagger
     var orderRepo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
     foreach (var sample in OrderSamples.All)
     {
@@ -135,6 +149,13 @@ using (var scope = app.Services.CreateScope())
             order.AddItem(item.ProductId, item.Quantity, item.UnitPrice);
         }
 
+        orderRepo.Save(order);
+    }
+
+    // Commandes générées automatiquement 
+    var generatedOrders = SampleDataFactory.CreateOrders(50, generatedCustomers, generatedProducts);
+    foreach (var order in generatedOrders)
+    {
         orderRepo.Save(order);
     }
 }

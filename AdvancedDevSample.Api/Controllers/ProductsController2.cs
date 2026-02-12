@@ -169,12 +169,12 @@ namespace AdvancedDevSample.Api.Controllers
         /// Il sert de \"dictionnaire\" des jeux de données dans Swagger.
         /// </remarks>
         /// <response code="200">Exemples de produits retournés.</response>
-       /// [HttpGet("samples")]
-        ///[ProducesResponseType(typeof(IEnumerable<ProductResponse>), StatusCodes.Status200OK)]
-       /// public ActionResult<IEnumerable<ProductResponse>> GetSamples()
-        ///{
-           /// return Ok(ProductSamples.All);
-        ///}
+        //[HttpGet("samples")]
+        //[ProducesResponseType(typeof(IEnumerable<ProductResponse>), StatusCodes.Status200OK)]
+        //public ActionResult<IEnumerable<ProductResponse>> GetSamples()
+        //{
+        //    return Ok(ProductSamples.All);
+        //}
     }
 
 }

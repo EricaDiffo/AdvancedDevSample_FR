@@ -16,6 +16,8 @@ namespace AdvancedDevSample.Application.Interfaces
         void ActivateCustomer(Guid id);
 
         void DeactivateCustomer(Guid id);
+
+        CustomerResponse Update(Guid id, UpdateCustomerRequest request);
     }
 }
 

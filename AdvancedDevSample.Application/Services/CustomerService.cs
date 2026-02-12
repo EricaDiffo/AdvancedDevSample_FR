@@ -52,6 +52,17 @@ namespace AdvancedDevSample.Application.Services
             _repository.Save(customer);
         }
 
+        public CustomerResponse Update(Guid id, UpdateCustomerRequest request)
+        {
+            var customer = GetCustomerEntity(id);
+
+            customer.Rename(request.FirstName, request.LastName);
+            customer.ChangeEmail(request.Email);
+
+            _repository.Save(customer);
+            return MapToResponse(customer);
+        }
+
         private Customer GetCustomerEntity(Guid id)
         {
             return _repository.GetById(id)
