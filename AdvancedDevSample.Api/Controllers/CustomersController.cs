@@ -1,7 +1,6 @@
 using AdvancedDevSample.Application.DTOs;
 using AdvancedDevSample.Application.Exceptions;
-using AdvancedDevSample.Application.Services;
-using AdvancedDevSample.Domain.Exceptions;
+using AdvancedDevSample.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -12,11 +11,13 @@ namespace AdvancedDevSample.Api.Controllers
     [Route("api/customers")]
     public class CustomersController : ControllerBase
     {
-        private readonly CustomerService _customerService;
+        private readonly ICustomerService _customerService;
+        private readonly IOrderService _orderService;
 
-        public CustomersController(CustomerService customerService)
+        public CustomersController(ICustomerService customerService, IOrderService orderService)
         {
             _customerService = customerService;
+            _orderService = orderService;
         }
 
         /// <summary>
@@ -57,6 +58,29 @@ namespace AdvancedDevSample.Api.Controllers
             try
             {
                 var customer = _customerService.GetById(id);
+                return Ok(customer);
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Met à jour les informations d'un client.
+        /// </summary>
+        /// <param name="id">Identifiant unique du client.</param>
+        /// <param name="request">Nouvelles informations du client.</param>
+        /// <response code="200">Client mis à jour.</response>
+        /// <response code="404">Client introuvable.</response>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<CustomerResponse> Update(Guid id, [FromBody] UpdateCustomerRequest request)
+        {
+            try
+            {
+                var customer = _customerService.Update(id, request);
                 return Ok(customer);
             }
             catch (ApplicationServiceException ex)
@@ -110,15 +134,35 @@ namespace AdvancedDevSample.Api.Controllers
         }
 
         /// <summary>
-        /// Annuaire de jeux de données exemple pour les clients.
+        /// Récupère les commandes d'un client.
         /// </summary>
-        /// <response code="200">Exemples de clients retournés.</response>
-        [HttpGet("samples")]
-        [ProducesResponseType(typeof(IEnumerable<CustomerResponse>), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<CustomerResponse>> GetSamples()
+        /// <param name="id">Identifiant unique du client.</param>
+        /// <response code="200">Liste des commandes du client.</response>
+        /// <response code="404">Client introuvable.</response>
+        [HttpGet("{id}/orders")]
+        [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<OrderResponse>> GetOrders(Guid id)
         {
-            return Ok(Api.Samples.CustomerSamples.All);
+            try
+            {
+                // Vérifie que le client existe (et déclenche un 404 cohérent sinon)
+                _customerService.GetById(id);
+
+                var orders = _orderService
+                    .ListAll()
+                    .Where(o => o.CustomerId == id)
+                    .ToList();
+
+                return Ok(orders);
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
+
+        // Endpoint /samples désactivé pour l'instant
     }
 }
 

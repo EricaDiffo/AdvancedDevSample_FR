@@ -1,5 +1,6 @@
 using AdvancedDevSample.Application.DTOs;
 using AdvancedDevSample.Domain.Entities;
+using AdvancedDevSample.Domain.Interfaces;
 using AdvancedDevSample.Domain.ValueObjects;
 using System.Net;
 using System.Net.Http.Headers;
@@ -9,7 +10,7 @@ using Xunit;
 
 namespace AdvancedDevSample.Test.API.Integration
 {
-    public class ProductAsyncControllerIntergrationTest
+    public class ProductAsyncControllerIntergrationTest : IClassFixture<CustomWebApplicationFactory>
     {
         private readonly HttpClient _client;
         private readonly InMemoryProductRepositoryAsync _repository;
@@ -17,7 +18,7 @@ namespace AdvancedDevSample.Test.API.Integration
         public ProductAsyncControllerIntergrationTest(CustomWebApplicationFactory factory)
         {
             _client = factory.CreateClient();
-            _repository = (InMemoryProductRepositoryAsync)factory.Services.GetRequiredService<InMemoryProductRepositoryAsync>();
+            _repository = (InMemoryProductRepositoryAsync)factory.Services.GetRequiredService<IProductRepository>();
 
             // Récupérer un vrai JWT en appelant l'endpoint d'auth
             var token = GetJwtToken();
