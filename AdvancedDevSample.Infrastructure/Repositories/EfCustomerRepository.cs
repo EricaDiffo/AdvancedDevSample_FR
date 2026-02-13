@@ -63,6 +63,23 @@ namespace AdvancedDevSample.Infrastructure.Repositories
                 throw new InfrastructureException("Erreur lors de la sauvegarde du client.", ex);
             }
         }
+
+        public void Delete(Guid id)
+        {
+            try
+            {
+                var entity = _context.Set<Customer>().Find(id);
+                if (entity != null)
+                {
+                    _context.Set<Customer>().Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la suppression du client.", ex);
+            }
+        }
     }
 }
 

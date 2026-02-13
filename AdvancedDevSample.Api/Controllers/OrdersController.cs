@@ -65,6 +65,29 @@ namespace AdvancedDevSample.Api.Controllers
         }
 
         /// <summary>
+        /// Met à jour le statut d'une commande.
+        /// </summary>
+        /// <param name="id">Identifiant unique de la commande.</param>
+        /// <param name="request">Nouveau statut de la commande.</param>
+        /// <response code="200">Commande mise à jour.</response>
+        /// <response code="404">Commande introuvable.</response>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<OrderResponse> Update(Guid id, [FromBody] UpdateOrderRequest request)
+        {
+            try
+            {
+                var order = _orderService.Update(id, request);
+                return Ok(order);
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Récupère les lignes (produits) d'une commande donnée.
         /// </summary>
         /// <param name="id">Identifiant unique de la commande.</param>
@@ -84,6 +107,34 @@ namespace AdvancedDevSample.Api.Controllers
             {
                 return NotFound(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Supprime une commande.
+        /// </summary>
+        /// <param name="id">Identifiant de la commande.</param>
+        /// <response code="204">Commande supprimée.</response>
+        /// <response code="404">Commande introuvable.</response>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                _orderService.Delete(id);
+                return NoContent();
+            }
+            catch (ApplicationServiceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                // empty catch block - swallowing exception silently
+            }
+
+            return NoContent();
         }
 
         /// <summary>

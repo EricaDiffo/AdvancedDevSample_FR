@@ -25,6 +25,13 @@ namespace AdvancedDevSample.Api.Samples
             "Pending", "Confirmed", "Shipped", "Cancelled"
         };
 
+        private static readonly string[] SupplierNames =
+        {
+            "TechCorp", "GlobalSupply", "FastShip", "QualityFirst",
+            "PremiumGoods", "EcoSupplies", "MegaDistributors", "SmartLogistics",
+            "NextGenSupply", "ReliablePartners"
+        };
+
         /// <summary>
         /// Génère une liste de clients de démo.
         /// </summary>
@@ -71,6 +78,28 @@ namespace AdvancedDevSample.Api.Samples
             }
 
             return products;
+        }
+
+        /// <summary>
+        /// Génère une liste de fournisseurs de démo.
+        /// </summary>
+        public static IReadOnlyList<Supplier> CreateSuppliers(int count)
+        {
+            var random = new Random(3456);
+            var suppliers = new List<Supplier>(count);
+
+            for (var i = 0; i < count; i++)
+            {
+                var name = $"{SupplierNames[random.Next(SupplierNames.Length)]} {i + 1}";
+                var isActive = random.NextDouble() < 0.9; // 90 % actifs
+
+                suppliers.Add(new Supplier(
+                    Guid.Empty,
+                    name,
+                    isActive));
+            }
+
+            return suppliers;
         }
 
         /// <summary>

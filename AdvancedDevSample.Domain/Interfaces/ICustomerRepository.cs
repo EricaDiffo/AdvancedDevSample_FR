@@ -12,6 +12,8 @@ namespace AdvancedDevSample.Domain.Interfaces
         Customer? GetById(Guid id);
 
         IEnumerable<Customer> ListAll();
+
+        void Delete(Guid id);
     }
 }
 

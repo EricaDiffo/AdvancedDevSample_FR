@@ -29,5 +29,10 @@ namespace AdvancedDevSample.Test.API.Integration
         {
             return _store.Values.ToList();
         }
+
+        public void Delete(Guid id)
+        {
+            _store.Remove(id);
+        }
     }
 }

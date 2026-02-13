@@ -13,11 +13,9 @@ namespace AdvancedDevSample.Application.Interfaces
 
         IEnumerable<CustomerResponse> ListAll();
 
-        void ActivateCustomer(Guid id);
-
-        void DeactivateCustomer(Guid id);
-
         CustomerResponse Update(Guid id, UpdateCustomerRequest request);
+
+        void Delete(Guid id);
     }
 }
 

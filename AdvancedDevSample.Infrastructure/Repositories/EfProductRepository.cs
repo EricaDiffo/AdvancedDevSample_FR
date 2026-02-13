@@ -83,5 +83,22 @@ namespace AdvancedDevSample.Infrastructure.Repositories
                 throw new InfrastructureException("Erreur lors de la sauvegarde du produit.", ex);
             }
         }
+
+        public void Delete(Guid id)
+        {
+            try
+            {
+                var entity = _context.Products.Find(id);
+                if (entity != null)
+                {
+                    _context.Products.Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InfrastructureException("Erreur lors de la suppression du produit.", ex);
+            }
+        }
     }
 }
