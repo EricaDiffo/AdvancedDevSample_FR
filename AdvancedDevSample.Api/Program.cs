@@ -27,9 +27,15 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Product Catalog API",
-        Version = "v1",
-        Description = "API de catalogue produits permettant de lister, consulter, modifier le prix, appliquer des promotions et activer/désactiver des produits."
+        Title = "Advanced Dev Sample - API de Gestion",
+        Version = "v1.0",
+        Description = @"
+Projet académique démontrant l'implémentation d'une API de gestion commerciale complète (catalogue produits, clients, commandes, fournisseurs)
+en appliquant les principes de Clean Architecture et Domain-Driven Design.
+
+🔐 **Authentification**: Pour la démo, les identifiants sont configurés dans AuthController (voir documentation - section Quick Start).
+📖 **Documentation complète**: Disponible via MkDocs
+"
     });
 
     // Inclure les commentaires XML (doc ///) de tous les projets pour enrichir Swagger
@@ -42,7 +48,7 @@ builder.Services.AddSwaggerGen(options =>
     // Schéma de sécurité Bearer token
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Token d'accès au format Bearer {token}. Entrez 'Bearer' suivi d'un espace puis votre token.",
+        Description = "Token d'accès au format {token}. Entrez votre token.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
@@ -98,66 +104,35 @@ builder.Services
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 // ===== Dépendances Infrastructure =====
 builder.Services.AddScoped<IProductRepository, EfProductRepository>();
 builder.Services.AddScoped<ICustomerRepository, EfCustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, EfOrderRepository>();
+builder.Services.AddScoped<ISupplierRepository, EfSupplierRepository>();
 
 var app = builder.Build();
 
-// Seed des repositories avec les données de l'annuaire pour permettre les opérations réelles
+// Seed de la base de données avec des données générées
 using (var scope = app.Services.CreateScope())
 {
-    // Produits à partir de l'annuaire Swagger
     var productRepo = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-    foreach (var sample in ProductSamples.All)
-    {
-        var product = new Product(sample.Id, new Price(sample.Price), sample.IsActive);
-        productRepo.Save(product);
-    }
-
-    // Produits générés automatiquement
-    var generatedProducts = SampleDataFactory.CreateProducts(50).ToList();
-    foreach (var product in generatedProducts)
-    {
-        productRepo.Save(product);
-    }
-
-    // Clients à partir de l'annuaire Swagger
     var customerRepo = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
-    foreach (var sample in CustomerSamples.All)
-    {
-        var customer = new Customer(sample.Id, sample.FirstName, sample.LastName, sample.Email, sample.IsActive);
-        customerRepo.Save(customer);
-    }
-
-    // Clients générés automatiquement
-    var generatedCustomers = SampleDataFactory.CreateCustomers(50).ToList();
-    foreach (var customer in generatedCustomers)
-    {
-        customerRepo.Save(customer);
-    }
-
-    // Commandes à partir de l'annuaire Swagger
     var orderRepo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
-    foreach (var sample in OrderSamples.All)
-    {
-        var order = new Order(sample.Id, sample.CustomerId, sample.OrderDate, Enumerable.Empty<OrderItem>(), sample.Status);
-        foreach (var item in sample.Items)
-        {
-            order.AddItem(item.ProductId, item.Quantity, item.UnitPrice);
-        }
+    var supplierRepo = scope.ServiceProvider.GetRequiredService<ISupplierRepository>();
 
-        orderRepo.Save(order);
-    }
+    // Génération des données de test
+    var products = SampleDataFactory.CreateProducts(50).ToList();
+    var customers = SampleDataFactory.CreateCustomers(50).ToList();
+    var suppliers = SampleDataFactory.CreateSuppliers(20).ToList();
+    var orders = SampleDataFactory.CreateOrders(50, customers, products);
 
-    // Commandes générées automatiquement 
-    var generatedOrders = SampleDataFactory.CreateOrders(50, generatedCustomers, generatedProducts);
-    foreach (var order in generatedOrders)
-    {
-        orderRepo.Save(order);
-    }
+    // Enregistrement en base
+    foreach (var product in products) productRepo.Save(product);
+    foreach (var customer in customers) customerRepo.Save(customer);
+    foreach (var supplier in suppliers) supplierRepo.Save(supplier);
+    foreach (var order in orders) orderRepo.Save(order);
 }
 
 // Configure the HTTP request pipeline.

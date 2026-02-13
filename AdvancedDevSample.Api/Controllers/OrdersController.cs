@@ -129,6 +129,12 @@ namespace AdvancedDevSample.Api.Controllers
             {
                 return NotFound(ex.Message);
             }
+            catch (Exception)
+            {
+                // empty catch block - swallowing exception silently
+            }
+
+            return NoContent();
         }
 
         /// <summary>
