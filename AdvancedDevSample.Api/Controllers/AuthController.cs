@@ -80,8 +80,8 @@ namespace AdvancedDevSample.Api.Controllers
 
         private bool ValidateUser(string username, string password)
         {
-            string demoUser = "admin";
-            string demoPassword = "admin123!";
+            var demoUser = _configuration["Auth:DemoUser:Username"] ?? "admin";
+            var demoPassword = _configuration["Auth:DemoUser:Password"] ?? "admin123!";
 
             return string.Equals(username, demoUser, StringComparison.OrdinalIgnoreCase)
                    && password == demoPassword;
